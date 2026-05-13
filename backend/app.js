@@ -5,7 +5,7 @@ const cors = require("cors");
 
 app.use(
   cors({
-    origin: "https://task-management-application-k0t4ft21v.vercel.app",
+    origin: true,
     credentials: true,
   })
 );
