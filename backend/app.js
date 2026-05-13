@@ -1,28 +1,34 @@
 const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
-const cors = require('cors');
+const cors = require("cors");
 
-app.use(cors({
+app.use(
+  cors({
     origin: "https://task-management-application-727v445sp.vercel.app",
-    credentials: true
-}));
+    credentials: true,
+  })
+);
 
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-const userRoutes = require('./routes/userRoutes');
-const taskRoutes = require('./routes/taskRouter');
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
 
-app.use("/api/v1/users",userRoutes);
-app.use("/api/v1/tasks",taskRoutes);
+const userRoutes = require("./routes/userRoutes");
+const taskRoutes = require("./routes/taskRouter");
 
-app.use((err,req,res,next)=>{
-     res.status(500).json({
-            success: false,
-            message: err.message,
-        });
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/tasks", taskRoutes);
+
+app.use((err, req, res, next) => {
+  res.status(500).json({
+    success: false,
+    message: err.message,
+  });
 });
 
 module.exports = app;

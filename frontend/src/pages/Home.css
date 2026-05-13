@@ -1,8 +1,0 @@
-.card-img-top {
-    height: 300px;
-    object-fit: contain;
-}
-body{
-    background-image: radial-gradient(circle,rgb(44, 7, 42),rgb(0, 0, 0));
-    color: white;
-}
