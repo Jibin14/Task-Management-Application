@@ -1,78 +1,248 @@
-const Task = require('../models/tasks');
+const Task = require("../models/tasks");
 
-// ➤ Create Task
-exports.createTask = async (req, res) => {
-    try {
-        const task = await Task.create(req.body);
-
-        res.status(201).json({
-            success: true,
-            task
-        });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
-
-// ➤ Get All Tasks
-exports.getTasksBySelectedDate = async (req, res) => {
+// ➤ CREATE TASK
+exports.createTask = async (
+  req,
+  res
+) => {
   try {
-    const { date } = req.query;
+    const task =
+      await Task.create(req.body);
 
-    if (!date) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide a date",
-      });
-    }
-
-    // Start of selected day
-    const startDate = new Date(date);
-    startDate.setHours(0, 0, 0, 0);
-
-    // End of selected day
-    const endDate = new Date(date);
-    endDate.setHours(23, 59, 59, 999);
-
-    const tasks = await Task.find({
-      taskDate: {
-        $gte: startDate,
-        $lte: endDate,
-      },
-    }).sort({ taskDate: 1 });
-
-    res.status(200).json({
+    res.status(201).json({
       success: true,
-      tasks,
+      task,
     });
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: err.message,
     });
   }
 };
 
-// ➤ Update Task
-exports.updateTask = async (req, res) => {
-    const task = await Task.findByIdAndUpdate(
+// ➤ COMPLETE TASK FOR TODAY ONLY
+exports.completeTaskForToday =
+  async (req, res) => {
+    try {
+      const task =
+        await Task.findById(
+          req.params.id
+        );
+
+      if (!task) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Task not found",
+        });
+      }
+
+      // TODAY DATE
+      const today = new Date()
+        .toISOString()
+        .split("T")[0];
+
+      // ADD TODAY TO COMPLETED DATES
+      if (
+        !task.completedDates.includes(
+          today
+        )
+      ) {
+        task.completedDates.push(
+          today
+        );
+      }
+
+      await task.save();
+
+      res.status(200).json({
+        success: true,
+        task,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message:
+          error.message,
+      });
+    }
+  };
+
+// ➤ GET TASKS BY SELECTED DATE
+exports.getTasksBySelectedDate =
+  async (req, res) => {
+    try {
+      const { date } = req.query;
+
+      if (!date) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Please provide a date",
+        });
+      }
+
+      // SELECTED DATE
+      const selectedDate =
+        new Date(date);
+
+      // FORMAT YYYY-MM-DD
+      const formattedDate =
+        selectedDate
+          .toISOString()
+          .split("T")[0];
+
+      // START OF DAY
+      const startDate =
+        new Date(selectedDate);
+
+      startDate.setHours(
+        0,
+        0,
+        0,
+        0
+      );
+
+      // END OF DAY
+      const endDate =
+        new Date(selectedDate);
+
+      endDate.setHours(
+        23,
+        59,
+        59,
+        999
+      );
+
+      // WEEKDAY
+      const weekdays = [
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+      ];
+
+      const currentDay =
+        weekdays[
+        selectedDate.getDay()
+        ];
+
+      // MONTH DATE
+      const currentDate =
+        selectedDate.getDate();
+
+      // FIND TASKS
+      let tasks =
+        await Task.find({
+          $or: [
+            // NORMAL TASK
+            {
+              taskDate: {
+                $gte: startDate,
+                $lte: endDate,
+              },
+            },
+
+            // DAILY REPEAT
+            {
+              repeatEnabled: true,
+              repeatType: "daily",
+            },
+
+            // WEEKLY REPEAT
+            {
+              repeatEnabled: true,
+              repeatType: "weekly",
+              repeatDays:
+                currentDay,
+            },
+
+            // MONTHLY REPEAT
+            {
+              repeatEnabled: true,
+              repeatType:
+                "monthly",
+              repeatDate:
+                currentDate,
+            },
+          ],
+        }).sort({
+          createdAt: -1,
+        });
+
+      // REMOVE COMPLETED TASKS
+      tasks = tasks.filter(
+        (task) =>
+          !task.completedDates?.includes(
+            formattedDate
+          )
+      );
+
+      res.status(200).json({
+        success: true,
+        tasks,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message:
+          error.message,
+      });
+    }
+  };
+
+// ➤ UPDATE TASK
+exports.updateTask = async (
+  req,
+  res
+) => {
+  try {
+    const task =
+      await Task.findByIdAndUpdate(
         req.params.id,
         req.body,
-        { new: true }
-    );
+        {
+          new: true,
+        }
+      );
 
-    res.json({
-        success: true,
-        task
+    res.status(200).json({
+      success: true,
+      task,
     });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message:
+        error.message,
+    });
+  }
 };
 
-// ➤ Delete Task
-exports.deleteTask = async (req, res) => {
-    await Task.findByIdAndDelete(req.params.id);
+// ➤ DELETE TASK
+exports.deleteTask = async (
+  req,
+  res
+) => {
+  try {
+    await Task.findByIdAndDelete(
+      req.params.id
+    );
 
-    res.json({
-        success: true,
-        message: "Task deleted"
+    res.status(200).json({
+      success: true,
+      message:
+        "Task deleted successfully",
     });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message:
+        error.message,
+    });
+  }
 };

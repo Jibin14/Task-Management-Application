@@ -267,12 +267,15 @@ body {
   color: #666;
 }
 
-/* REPEAT BUTTONS */
+/* =========================
+   REPEAT BUTTONS
+========================= */
 
 .repeat-buttons {
   display: flex;
   gap: 12px;
   margin-bottom: 25px;
+  flex-wrap: wrap;
 }
 
 .repeat-buttons .btn {
@@ -282,19 +285,32 @@ body {
   border-radius: 30px !important;
   padding: 8px 25px !important;
   font-size: 13px;
+  transition: 0.2s ease;
 }
 
-/* DAYS */
+.repeat-buttons .btn:hover {
+  transform: scale(1.03);
+}
+
+.repeat-buttons .btn-dark {
+  background: #111 !important;
+  color: white !important;
+}
+
+/* =========================
+   DAYS
+========================= */
 
 .days-container {
   display: flex;
   gap: 10px;
   margin-bottom: 25px;
+  flex-wrap: wrap;
 }
 
 .day-circle {
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   background: #f7f7f7;
   border-radius: 50%;
   display: flex;
@@ -303,13 +319,59 @@ body {
   font-size: 11px;
   color: #666;
   cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .day-circle:hover {
   background: #d8ffd2;
+  transform: scale(1.05);
 }
 
-/* FOOTER */
+.active-day {
+  background: #111 !important;
+  color: white !important;
+}
+
+/* =========================
+   INFO TEXT
+========================= */
+
+.repeat-info {
+  margin-top: 15px;
+}
+
+.repeat-info p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+/* =========================
+   MONTHLY BOX
+========================= */
+
+.monthly-box {
+  margin-top: 15px;
+}
+
+.monthly-box p {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.monthly-box select {
+  border-radius: 10px !important;
+  border: none !important;
+  background: white !important;
+  padding: 10px !important;
+  font-size: 14px;
+  box-shadow: none !important;
+}
+
+/* =========================
+   FOOTER
+========================= */
 
 .repeat-footer {
   display: flex;
@@ -318,6 +380,19 @@ body {
   padding-top: 15px;
   font-size: 13px;
   color: #555;
+}
+
+/* =========================
+   SWITCH
+========================= */
+
+.form-check-input {
+  cursor: pointer;
+}
+
+.form-check-input:checked {
+  background-color: #111 !important;
+  border-color: #111 !important;
 }
 
 /* =========================
@@ -386,6 +461,7 @@ body {
   color: black !important;
   font-size: 20px !important;
   box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+  transition: 0.2s ease;
 }
 
 .floating-btn:hover,
@@ -415,6 +491,7 @@ body {
 ========================= */
 
 @media (max-width: 992px) {
+
   .home-page {
     flex-direction: column;
     height: auto;
@@ -435,7 +512,24 @@ body {
   }
 }
 
+@media (max-width: 768px) {
+
+  .repeat-buttons {
+    flex-wrap: wrap;
+  }
+
+  .days-container {
+    flex-wrap: wrap;
+  }
+
+  .repeat-right {
+    width: 100%;
+    margin-top: 20px;
+  }
+}
+
 @media (max-width: 576px) {
+
   .today-title {
     font-size: 30px;
   }
@@ -449,5 +543,11 @@ body {
   .submit-btn {
     width: 50px;
     height: 50px;
+  }
+
+  .day-circle {
+    width: 34px;
+    height: 34px;
+    font-size: 10px;
   }
 }

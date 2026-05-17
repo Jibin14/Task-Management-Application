@@ -5,7 +5,10 @@ const cors = require("cors");
 
 app.use(
   cors({
-    origin: true,
+    origin: [
+      "http://localhost:5173",
+      "https://your-frontend.vercel.app",
+    ],
     credentials: true,
   })
 );
@@ -18,12 +21,14 @@ app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
+// Routes
 const userRoutes = require("./routes/userRoutes");
 const taskRoutes = require("./routes/taskRouter");
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/tasks", taskRoutes);
 
+// Error Middleware
 app.use((err, req, res, next) => {
   res.status(500).json({
     success: false,
