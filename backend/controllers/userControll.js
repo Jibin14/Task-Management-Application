@@ -93,18 +93,18 @@ exports.userLogin = async (req, res) => {
     delete userObject.password;
 
     res
-      .status(200)
-      .cookie("token", token, {
-        maxAge: 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      })
-      .json({
-        success: true,
-        message: "User logged in successfully",
-        user: userObject,
-      });
+  .status(200)
+  .cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    maxAge: 24 * 60 * 60 * 1000,
+  })
+  .json({
+    success: true,
+    message: "User logged in successfully",
+    user: userObject,
+  });
   } catch (error) {
     res.status(500).json({
       success: false,
