@@ -6,9 +6,9 @@ const cors = require("cors");
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
-      "https://task-management-application-gules.vercel.app",
-    ],
+  "http://localhost:5173",
+  "https://task-management-application-pr46xsdus.vercel.app",
+],
     credentials: true,
   })
 );
