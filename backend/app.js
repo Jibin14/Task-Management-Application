@@ -7,7 +7,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://your-frontend.vercel.app",
+      "https://task-management-application-gules.vercel.app",
     ],
     credentials: true,
   })
